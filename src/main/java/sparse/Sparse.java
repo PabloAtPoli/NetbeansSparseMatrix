@@ -4,7 +4,16 @@ import java.util.Scanner;
 
 public class Sparse {
 
-    private static int array[][];
+    // Sparse matrix having size 4*5  
+    private static int array[][]
+            = {
+                {0, 0, 6, 0, 9},
+                {0, 0, 4, 6, 0},
+                {0, 0, 0, 0, 0},
+                {0, 1, 2, 0, 0}
+            };
+
+    private static int compactMatrix[][];
 
     public Sparse() {
 
@@ -47,14 +56,66 @@ public class Sparse {
         }
     }
 
+    public static void print() {
+        int i, j;
+        for (i = 0; i < array.length; i++) {
+            for (j = 0; j < array[i].length; j++) {
+                System.out.print(array[i][j] + " ");
+            }
+            System.out.println("");
+        }
+    }
+
+    public static void compact() {
+        // Count non zero entries of the sparse matrix
+        int nonZeroCount = 0;
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if (array[i][j] != 0) {
+                    nonZeroCount++;
+                }
+            }
+        }
+
+        // Create compact matrix
+        compactMatrix = new int[3][nonZeroCount];
+        int k = 0;
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if (array[i][j] != 0) {
+                    compactMatrix[0][k] = i;
+                    compactMatrix[1][k] = j;
+                    compactMatrix[2][k] = array[i][j];
+                    k++;
+                }
+            }
+        }
+
+    }
+
+    public static void printCompactMatrix() {
+        for (int i = 0; i < compactMatrix.length; i++) {
+            for (int j = 0; j < compactMatrix[i].length; j++) {
+                System.out.print(compactMatrix[i][j] + "  ");
+            }
+            System.out.println("");
+        }
+    }
+
     public static void main(String args[]) {
 
-        read();
-
+        // read();
         if (isSparse()) {
             System.out.println("the matrix is sparse");
         } else {
             System.out.println("the matrix is not sparse");
         }
+        System.out.println("The sparse matrix is ...");
+        print();
+
+        compact();
+
+        System.out.println("The compact matrix is ...");
+        printCompactMatrix();
     }
 }
