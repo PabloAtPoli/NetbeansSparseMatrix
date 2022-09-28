@@ -9,7 +9,7 @@ public class Sparse {
 
     }
 
-    private static int [][] read() {
+    private static int[][] read() {
         int i, j;
 
         System.out.println("Enter total rows and columns: ");
@@ -26,11 +26,11 @@ public class Sparse {
                 System.out.print(" ");
             }
         }
-        
+
         return array;
     }
 
-    public static boolean isSparse(int [][] array) {
+    public static boolean isSparse(int[][] array) {
         int i, j, zero = 0, count = 0;
         // array.length returns the number of rows
         for (i = 0; i < array.length; i++) {
@@ -60,7 +60,7 @@ public class Sparse {
         }
     }
 
-    public static int[][] pack(int [][] array) {
+    public static int[][] pack(int[][] array) {
         int[][] packedMatrix;
 
         // Count non zero entries of the sparse matrix
@@ -91,10 +91,37 @@ public class Sparse {
 
     }
 
+    public static int[][] unpack(int[][] packedMatrix) {
+        // Find number of rows and colums of the unpacked matrix
+
+        int rowsNumber = packedMatrix[0][0];
+        int columsNumber = packedMatrix[1][0];
+
+        for (int i = 0; i < packedMatrix[0].length; i++) {
+            if (packedMatrix[0][i] > rowsNumber) {
+                rowsNumber = packedMatrix[0][i];
+            }
+            if (packedMatrix[1][i] > columsNumber) {
+                columsNumber = packedMatrix[1][i];
+            }
+
+        }
+
+        int[][] unpackedMatrix = new int[rowsNumber+1][columsNumber+1];
+
+        for (int i = 0; i < packedMatrix[0].length; i++) {
+            int row = packedMatrix[0][i];
+            int column = packedMatrix[1][i];
+            unpackedMatrix[row][column] = packedMatrix[2][i];
+        }
+
+        return unpackedMatrix;
+
+    }
 
     public static void main(String args[]) {
         // Sparse matrix having size 4*5  
-        
+
         int array[][]
                 = {
                     {0, 0, 6, 0, 9},
@@ -119,5 +146,12 @@ public class Sparse {
         System.out.println(
                 "The compact matrix is ...");
         print(packedtMatrix);
+
+        int[][] unpackedtMatrix = unpack(packedtMatrix);
+
+        System.out.println(
+                "The unpacked matrix again is ...");
+        print(unpackedtMatrix);
+
     }
 }
