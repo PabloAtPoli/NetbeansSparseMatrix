@@ -54,7 +54,7 @@ public class Sparse {
         int i, j;
         for (i = 0; i < array.length; i++) {
             for (j = 0; j < array[i].length; j++) {
-                System.out.print(array[i][j] + " ");
+                System.out.printf("%4d", array[i][j]);
             }
             System.out.println("");
         }
@@ -131,13 +131,15 @@ public class Sparse {
                 }
             }
         }
-        
+
         int lengthAddition = packedMatrix1[0].length + packedMatrix2[0].length - countEqualEntries;
 
         int[][] additionMatrix = new int[3][lengthAddition];
+
+        // This array record the entries in  packedMatrix2 that has not been added to additionMatrix
         boolean[] entryAdded = new boolean[packedMatrix2[0].length];
 
-        int k=0;
+        int k = 0;
         for (int i = 0; i < packedMatrix1[0].length; i++) {
             int sum = packedMatrix1[2][i];
             for (int j = 0; j < packedMatrix2[0].length; j++) {
@@ -146,21 +148,25 @@ public class Sparse {
                     entryAdded[j] = true;
                 }
             }
+            // Add non-zero entry to additionMatrix
+
             additionMatrix[0][i] = packedMatrix1[0][i];
             additionMatrix[1][i] = packedMatrix1[1][i];
             additionMatrix[2][i] = sum;
             k++;
         }
 
+        // Add the entries in packedMatrix2 that has not been added to additionMatrix
         for (int i = 0; i < entryAdded.length; i++) {
             if (!entryAdded[i]) {
-                additionMatrix[0][k] = packedMatrix2[0][i];
-                additionMatrix[1][k] = packedMatrix2[1][i];
-                additionMatrix[2][k] = packedMatrix2[2][i];
-                k++;
+                if (packedMatrix2[2][i] != 0) {
+                    additionMatrix[0][k] = packedMatrix2[0][i];
+                    additionMatrix[1][k] = packedMatrix2[1][i];
+                    additionMatrix[2][k] = packedMatrix2[2][i];
+                    k++;
+                }
             }
         }
-
         return additionMatrix;
     }
 
@@ -229,17 +235,21 @@ public class Sparse {
                 "The sparse matrix 2 again is ...");
         print(unpacked2);
 
-        int[][] packedAddition = addPacketMatrixes(packed1, packed2);
+        int[][] packedAddition;
+        if (sparse1.length == sparse2.length && sparse1[0].length == sparse2[0].length) {
+            packedAddition = addPacketMatrixes(packed1, packed2);
+            System.out.println(
+                    "The packed addition is ...");
+            print(packedAddition);
 
-        System.out.println(
-                "The packed addition is ...");
-        print(packedAddition);
+            int[][] unpackedAdditon = unpack(packedAddition);
 
-        int[][] unpackedAdditon = unpack(packedAddition);
-
-        System.out.println(
-                "The sparse addition matrix is ...");
-        print(unpackedAdditon);
+            System.out.println(
+                    "The sparse addition matrix is ...");
+            print(unpackedAdditon);
+        } else {
+            System.out.println("Matrixes cannot be add it");
+        }
 
     }
 }
