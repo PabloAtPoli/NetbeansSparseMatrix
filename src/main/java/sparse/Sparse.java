@@ -32,9 +32,9 @@ public class Sparse {
 
     public static boolean isSparse(int[][] array) {
         int i, j, zero = 0, count = 0;
-        // array.length returns the number of rows
+        // sparse2.length returns the number of rows
         for (i = 0; i < array.length; i++) {
-            // < array[i].length returns the number of colums of the ith row
+            // < sparse2[i].length returns the number of colums of the ith row
             for (j = 0; j < array[i].length; j++) {
                 if (array[i][j] == 0) {
                     zero++;
@@ -94,6 +94,8 @@ public class Sparse {
     public static int[][] unpack(int[][] packedMatrix) {
         // Find number of rows and colums of the unpacked matrix
 
+        // The greatest row in the packed matrix is in the last column of zero row  
+//        int rowsNumber = packedMatrix[0][packedMatrix[0].length - 1];
         int rowsNumber = packedMatrix[0][0];
         int columsNumber = packedMatrix[1][0];
 
@@ -107,22 +109,65 @@ public class Sparse {
 
         }
 
-        int[][] unpackedMatrix = new int[rowsNumber+1][columsNumber+1];
+        int[][] sparseMatrix = new int[rowsNumber + 1][columsNumber + 1];
 
         for (int i = 0; i < packedMatrix[0].length; i++) {
             int row = packedMatrix[0][i];
             int column = packedMatrix[1][i];
-            unpackedMatrix[row][column] = packedMatrix[2][i];
+            sparseMatrix[row][column] = packedMatrix[2][i];
         }
 
-        return unpackedMatrix;
+        return sparseMatrix;
 
+    }
+
+    public static int[][] addPacketMatrixes(int[][] packedMatrix1, int[][] packedMatrix2) {
+        // count equal entries with values in both matrixes
+        int countEqualEntries = 0;
+        for (int i = 0; i < packedMatrix1[0].length; i++) {
+            for (int j = 0; j < packedMatrix2[0].length; j++) {
+                if ((packedMatrix1[0][i] == packedMatrix2[0][j]) && (packedMatrix1[1][i] == packedMatrix2[1][j])) {
+                    countEqualEntries++;
+                }
+            }
+        }
+        
+        int lengthAddition = packedMatrix1[0].length + packedMatrix2[0].length - countEqualEntries;
+
+        int[][] additionMatrix = new int[3][lengthAddition];
+        boolean[] entryAdded = new boolean[packedMatrix2[0].length];
+
+        int k=0;
+        for (int i = 0; i < packedMatrix1[0].length; i++) {
+            int sum = packedMatrix1[2][i];
+            for (int j = 0; j < packedMatrix2[0].length; j++) {
+                if ((packedMatrix1[0][i] == packedMatrix2[0][j]) && (packedMatrix1[1][i] == packedMatrix2[1][j])) {
+                    sum += packedMatrix2[2][j];
+                    entryAdded[j] = true;
+                }
+            }
+            additionMatrix[0][i] = packedMatrix1[0][i];
+            additionMatrix[1][i] = packedMatrix1[1][i];
+            additionMatrix[2][i] = sum;
+            k++;
+        }
+
+        for (int i = 0; i < entryAdded.length; i++) {
+            if (!entryAdded[i]) {
+                additionMatrix[0][k] = packedMatrix2[0][i];
+                additionMatrix[1][k] = packedMatrix2[1][i];
+                additionMatrix[2][k] = packedMatrix2[2][i];
+                k++;
+            }
+        }
+
+        return additionMatrix;
     }
 
     public static void main(String args[]) {
         // Sparse matrix having size 4*5  
 
-        int array[][]
+        int[][] sparse1
                 = {
                     {0, 0, 6, 0, 9},
                     {0, 0, 4, 6, 0},
@@ -131,27 +176,70 @@ public class Sparse {
                 };
 
         // read();
-        if (isSparse(array)) {
-            System.out.println("the matrix is sparse");
+        if (isSparse(sparse1)) {
+            System.out.println("the matrix 1 is sparse");
         } else {
-            System.out.println("the matrix is not sparse");
+            System.out.println("the matrix 1 is not sparse");
         }
 
         System.out.println(
-                "The sparse matrix is ...");
-        print(array);
+                "The sparse matrix 1 is ...");
+        print(sparse1);
 
-        int[][] packedtMatrix = pack(array);
-
-        System.out.println(
-                "The compact matrix is ...");
-        print(packedtMatrix);
-
-        int[][] unpackedtMatrix = unpack(packedtMatrix);
+        int[][] packed1 = pack(sparse1);
 
         System.out.println(
-                "The unpacked matrix again is ...");
-        print(unpackedtMatrix);
+                "The compact matrix 1 is ...");
+        print(packed1);
+
+        int[][] unpacked1 = unpack(packed1);
+
+        System.out.println(
+                "The sparse matrix 1 again is ...");
+        print(unpacked1);
+
+        int[][] sparse2
+                = {
+                    {10, 0, 6, 0, 9},
+                    {0, 0, 4, 6, 0},
+                    {0, 0, 0, 0, 0},
+                    {0, 1, 2, 0, 10}
+                };
+
+        // read();
+        if (isSparse(sparse2)) {
+            System.out.println("the matrix 2 is sparse");
+        } else {
+            System.out.println("the matrix 2 is not sparse");
+        }
+
+        System.out.println(
+                "The sparse matrix 2 is ...");
+        print(sparse2);
+
+        int[][] packed2 = pack(sparse2);
+
+        System.out.println(
+                "The compact matrix 2 is ...");
+        print(packed2);
+
+        int[][] unpacked2 = unpack(packed2);
+
+        System.out.println(
+                "The sparse matrix 2 again is ...");
+        print(unpacked2);
+
+        int[][] packedAddition = addPacketMatrixes(packed1, packed2);
+
+        System.out.println(
+                "The packed addition is ...");
+        print(packedAddition);
+
+        int[][] unpackedAdditon = unpack(packedAddition);
+
+        System.out.println(
+                "The sparse addition matrix is ...");
+        print(unpackedAdditon);
 
     }
 }
