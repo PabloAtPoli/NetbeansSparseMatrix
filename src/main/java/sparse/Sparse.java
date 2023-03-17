@@ -93,9 +93,7 @@ public class Sparse {
 
     public static int[][] unpack(int[][] packedMatrix) {
         // Find number of rows and colums of the unpacked matrix
-
-
-//       Find the greatest row and column in the packed matrix
+        // Find the greatest row and column in the packed matrix
         int rowsNumber = packedMatrix[0][0];
         int columsNumber = packedMatrix[1][0];
 
@@ -123,8 +121,8 @@ public class Sparse {
 
     }
 
-    public static int[][] addPacketMatrixes(int[][] packedMatrix1, int[][] packedMatrix2) {
-        // countNoZero equal entries with values in both matrixes
+    public static int[][] addPackedMatrixes(int[][] packedMatrix1, int[][] packedMatrix2) {
+        // Count non zero equal entries in both matrixes
         int countEqualEntries = 0;
         for (int i = 0; i < packedMatrix1[0].length; i++) {
             for (int j = 0; j < packedMatrix2[0].length; j++) {
@@ -135,7 +133,7 @@ public class Sparse {
             }
         }
 
-        // It caclulates the number of colums of the addition packed matrix
+        // It calculates the number of colums of the addition packed matrix
         int lengthAddition = packedMatrix1[0].length + packedMatrix2[0].length - countEqualEntries;
 
         // It creates the addition matrix
@@ -143,7 +141,7 @@ public class Sparse {
 
         // This unidimensional array records the entries in  packedMatrix2
         // that has not been added to additionMatrix
-        boolean[] entryAdded = new boolean[packedMatrix2[0].length];
+        boolean[] isEntryAdded = new boolean[packedMatrix2[0].length];
 
         // variable k counts the number of entries in addition matrix
         int k = 0;
@@ -153,10 +151,10 @@ public class Sparse {
                 if ((packedMatrix1[0][i] == packedMatrix2[0][j]) && 
                         (packedMatrix1[1][i] == packedMatrix2[1][j])) {
                     sum += packedMatrix2[2][j];
-                    entryAdded[j] = true;
+                    isEntryAdded[j] = true;
                 }
             }
-            // Add non-countZero entry to additionMatrix
+            // It assigns the correspondies entries of packed1 and packed 2 matrixex to addition Matrix
 
             additionMatrix[0][i] = packedMatrix1[0][i];
             additionMatrix[1][i] = packedMatrix1[1][i];
@@ -165,8 +163,8 @@ public class Sparse {
         }
 
         // Add the entries in packedMatrix2 that has not been added to additionMatrix
-        for (int i = 0; i < entryAdded.length; i++) {
-            if (!entryAdded[i]) {
+        for (int i = 0; i < isEntryAdded.length; i++) {
+            if (!isEntryAdded[i]) {
                     additionMatrix[0][k] = packedMatrix2[0][i];
                     additionMatrix[1][k] = packedMatrix2[1][i];
                     additionMatrix[2][k] = packedMatrix2[2][i];
@@ -207,9 +205,9 @@ public class Sparse {
 
         int[][] unpacked1 = unpack(packed1);
 
-        System.out.println(
-                "The sparse matrix 1 again is ...");
-        print(unpacked1);
+//        System.out.println(
+//                "The sparse matrix 1 again is ...");
+//        print(unpacked1);
 
         int[][] sparse2
                 = {
@@ -238,13 +236,14 @@ public class Sparse {
 
         int[][] unpacked2 = unpack(packed2);
 
-        System.out.println(
-                "The sparse matrix 2 again is ...");
-        print(unpacked2);
+//        System.out.println(
+//                "The sparse matrix 2 again is ...");
+//        print(unpacked2);
 
         int[][] packedAddition;
-        if (sparse1[0].length == sparse2[0].length) {
-            packedAddition = addPacketMatrixes(packed1, packed2);
+        if (sparse1.length == sparse2.length && 
+                sparse1[0].length == sparse2[0].length) {
+            packedAddition = addPackedMatrixes(packed1, packed2);
             System.out.println(
                     "The packed addition is ...");
             print(packedAddition);
